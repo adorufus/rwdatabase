@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "rwdb-e39ec": {
+      "hosting": {
+        "rwddatabase": [
+          "rwdb-e39ec"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "rwdb-e39ec"
+  }
+}

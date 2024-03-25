@@ -101,6 +101,23 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "version": 2
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "rwddatabase:build:production",
+              "serveTarget": "rwddatabase:serve:production"
+            },
+            "development": {
+              "buildTarget": "rwddatabase:build:development",
+              "serveTarget": "rwddatabase:serve:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
