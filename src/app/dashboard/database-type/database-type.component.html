@@ -13,13 +13,13 @@
                 </div>
                 <input type="search" id="default-search"
                     class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Search Users..." required />
+                    placeholder="Search Types..." required />
                 <button type="submit"
                     class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
             </div>
         </form>
         <button data-modal-target="default-modal" data-modal-toggle="default-modal"
-            class="btn btn-success text-white">Add New Holding Company +</button>
+            class="btn btn-success text-white">Add New Database Types +</button>
     </div>
 
     <div class="relative overflow-x-auto rounded-md">
@@ -35,7 +35,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of companies | async" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <tr *ngFor="let item of types | async" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         {{item.name}}
                     </th>
@@ -56,7 +56,7 @@
                 <!-- Modal header -->
                 <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                     <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                        Add new company
+                        Add new database type
                     </h3>
                     <button type="button"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -71,10 +71,10 @@
                 </div>
                 <!-- Modal body -->
                 <div class="p-4 md:p-5 space-y-4">
-                    <label for="type-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company Name</label>
-                    <input type="text" id="city" name="city" [(ngModel)]="companyName"
+                    <label for="type-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type Name</label>
+                    <input type="text" id="city" name="city" [(ngModel)]="typeName"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Redwoods" />
+                        placeholder="Talent" />
                 </div>
                 <!-- Modal footer -->
                 <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">

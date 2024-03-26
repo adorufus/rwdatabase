@@ -14,9 +14,17 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NZ_I18N } from 'ng-zorro-antd/i18n';
+import { en_US } from 'ng-zorro-antd/i18n';
+import { registerLocaleData } from '@angular/common';
+import en from '@angular/common/locales/en';
+
+registerLocaleData(en);
 
 @NgModule({
   declarations: [
@@ -34,9 +42,14 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
     AngularFirestoreModule,
     ToastrModule.forRoot(),
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule
   ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync(),
+    { provide: NZ_I18N, useValue: en_US },
+    provideHttpClient()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

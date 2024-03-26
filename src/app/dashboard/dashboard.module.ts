@@ -6,10 +6,17 @@ import { NavbarComponent } from './layouts/navbar/navbar.component'
 import { SidebarComponent } from './layouts/sidebar/sidebar.component'
 import { ClientComponent } from './client/client.component'
 import { BaseComponent } from './layouts/base/base.component'
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'
 import { UsersComponent } from './users/users.component'
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http'
 import { CompanyComponent } from './company/company.component'
+import { DatabaseTypeComponent } from './database-type/database-type.component'
+import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker'
+import { provideNativeDateAdapter } from '@angular/material/core'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap'
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+
 
 const routes: Routes = [
   {
@@ -18,17 +25,21 @@ const routes: Routes = [
     children: [
       {
         path: 'client',
-        component: ClientComponent
+        component: ClientComponent,
       },
       {
         path: 'users',
-        component: UsersComponent
+        component: UsersComponent,
       },
       {
         path: 'companies',
-        component: CompanyComponent
-      }
-    ]
+        component: CompanyComponent,
+      },
+      {
+        path: 'types',
+        component: DatabaseTypeComponent,
+      },
+    ],
   },
 ]
 
@@ -41,8 +52,20 @@ const routes: Routes = [
     BaseComponent,
     UsersComponent,
     CompanyComponent,
+    DatabaseTypeComponent,
   ],
-  imports: [CommonModule, RouterModule.forChild(routes), FormsModule, HttpClientModule],
-  providers: []
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    FormsModule,
+    HttpClientModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    NgbDatepickerModule,
+    NzDatePickerModule
+  ],
+  providers: [
+    provideNativeDateAdapter()
+  ],
 })
 export class DashboardModule {}
