@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Timestamp } from '@angular/fire/firestore';
+import { initFlowbite } from 'flowbite';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -18,6 +19,7 @@ export class DatabaseTypeComponent {
   }
 
   ngOnInit(): void {
+    initFlowbite()
     this.types = this.db.collection('types').valueChanges()
   }
 

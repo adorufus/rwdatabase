@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { initFlowbite } from 'flowbite';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -18,6 +19,7 @@ export class CompanyComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    initFlowbite()
     this.companies = this.db.collection('companies').valueChanges()
   }
 

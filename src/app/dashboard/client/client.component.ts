@@ -3,7 +3,8 @@ import { AngularFirestore } from '@angular/fire/compat/firestore'
 import { Timestamp } from '@angular/fire/firestore'
 import { Observable } from 'rxjs'
 
-import { Dropdown, DropdownInterface, initDropdowns } from 'flowbite'
+import { Dropdown, DropdownInterface, initDropdowns, initFlowbite } from 'flowbite'
+import { FilterSysService } from '../../services/filter-sys.service'
 
 declare var Datepicker: any
 declare var DateRangePicker: any
@@ -31,19 +32,31 @@ export class ClientComponent implements OnInit {
   companyAddress: string = ''
   streetAddress2: string = ''
   selectedCompany: string = ''
+  selectedType: string = ''
   city: string = ''
   state: string = ''
   postalCode: string = ''
+  searchQuery: string = ''
 
   isFilterShown: boolean = false
+  isFiltering: boolean = false
 
   dropdown: DropdownInterface | undefined
 
   clients$: Observable<any[]> | undefined
 
-  constructor(private db: AngularFirestore) {}
+  constructor(private db: AngularFirestore, private filterSys: FilterSysService) {}
+
+  // filter fields var
+  selectedCompanyFilter: string = ''
+  selectedTypeFilter: string = ''
+  selectedIndustryFilter: string = ''
+  selectedStartDateFilter: Date | undefined
+  selectedEndDateFilter: Date | undefined
 
   ngOnInit(): void {
+
+    initFlowbite()
     // this.company$ = collectionData(
     //   collection(this.firestore, 'companies'),
     // ) as Observable<Company[]>
@@ -58,15 +71,45 @@ export class ClientComponent implements OnInit {
   }
 
   onSearch() {
+    console.log('onSearchEntry')
     this.isFilterShown = false
+    this.isFiltering = true
+
+    this.clients$ = this.filterSys.filterSearch({type: this.selectedTypeFilter, company: this.selectedCompanyFilter, industry: this.selectedIndustryFilter}, this.selectedStartDateFilter!, this.selectedEndDateFilter!, this.searchQuery)
   }
 
   onFilterClose() {
+    console.log('onFilterCloseEntry')
     this.isFilterShown = false
+    this.isFiltering = false
+    this.selectedCompanyFilter = ''
+    this.selectedIndustryFilter = ''
+    this.selectedTypeFilter = ''
+    this.selectedStartDateFilter = undefined
+    this.selectedEndDateFilter = undefined
+  }
+
+  onClearFilter() {
+    console.log('onClearEntry')
+    this.isFiltering = false
+    this.selectedCompanyFilter = ''
+    this.selectedIndustryFilter = ''
+    this.selectedTypeFilter = ''
+    this.selectedStartDateFilter = undefined
+    this.selectedEndDateFilter = undefined
+    this.clients$ = this.db
+      .collection('clients', (q) => q.orderBy('created_at', 'desc'))
+      .valueChanges()
+    // this.isFilterShown = !this.isFilterShown
   }
 
   onFilter() {
-    this.isFilterShown = !this.isFilterShown
+    console.log(`onFilterEntry & isFiltering: `, this.isFiltering)
+    if(this.isFiltering) {
+      this.onClearFilter()
+    } else {
+      this.isFilterShown = !this.isFilterShown
+    }
   }
 
   async checkIfValueExists() {
@@ -80,14 +123,39 @@ export class ClientComponent implements OnInit {
   }
 
   onCompanySelect(e: Event) {
-    console.log('company select')
     this.selectedCompany = (e.target as HTMLSelectElement).value
+  }
 
-    console.log(this.selectedCompany)
+  onTypeSelect(e: Event) {
+    this.selectedType = (e.target as HTMLSelectElement).value
+  }
+
+  onCompanyFilterSelect(e: Event) {
+    this.selectedCompanyFilter = (e.target as HTMLSelectElement).value
+  }
+
+  onIndustryFilterSelect(e: Event) {
+    this.selectedIndustryFilter = (e.target as HTMLSelectElement).value
+  }
+
+  onTypeFilterSelect(e: Event) {
+    this.selectedTypeFilter = (e.target as HTMLSelectElement).value
   }
 
   deleteData(id: string) {
     this.db.collection('clients').doc(id).delete()
+  }
+
+  validateInput() {
+    if(!this.name || this.name == '') {
+      return false
+    }
+
+    if(!this.phoneNumber || this.phoneNumber == 0) {
+      return false
+    }
+
+    return true
   }
 
   async saveData() {
@@ -95,33 +163,39 @@ export class ClientComponent implements OnInit {
     let dbRef = this.db.collection('clients').doc().ref
     console.log(await this.checkIfValueExists())
 
-    if (!(await this.checkIfValueExists())) {
-      this.db
-        .collection('clients').doc(dbRef.id)
-        .set({
-          id: dbRef.id,
-          name: this.name,
-          title: this.title,
-          company_name: this.companyName,
-          phone_number: this.phoneNumber,
-          website_url: this.websiteUrl,
-          department: this.department,
-          email: this.emailAddress,
-          company_address: this.companyAddress,
-          second_address: this.streetAddress2,
-          company: this.selectedCompany,
-          city: this.city,
-          state: this.state,
-          postal_code: this.postalCode,
-          created_at: Timestamp.fromDate(new Date(Date.now())),
-        })
-        .then((ref) => {
-          console.log(ref)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+    if(this.validateInput()) {
+      if (!(await this.checkIfValueExists())) {
+        this.db
+          .collection('clients').doc(dbRef.id)
+          .set({
+            id: dbRef.id,
+            name: this.name,
+            title: this.title,
+            company_name: this.companyName,
+            phone_number: this.phoneNumber,
+            website_url: this.websiteUrl,
+            department: this.department,
+            email: this.emailAddress,
+            company_address: this.companyAddress,
+            second_address: this.streetAddress2,
+            company: this.selectedCompany,
+            city: this.city,
+            state: this.state,
+            postal_code: this.postalCode,
+            type: this.selectedType,
+            created_at: Timestamp.fromDate(new Date(Date.now())),
+          })
+          .then((ref) => {
+            console.log(ref)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      } else {
+        ///TODO: Add error handling
+      }
     } else {
+      ///TODO: Add error handling
     }
   }
 }
