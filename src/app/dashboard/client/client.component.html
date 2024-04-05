@@ -20,7 +20,7 @@
                         </svg>
                     </div>
                     <nz-date-picker [(ngModel)]="selectedStartDateFilter"
-                    class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></nz-date-picker>
+                        class="bg-gray-50 border border-gray-300 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></nz-date-picker>
                 </div>
                 <span class="mx-2 text-gray-500 dark:text-gray-400">to</span>
                 <div class="relative">
@@ -32,7 +32,7 @@
                         </svg>
                     </div>
                     <nz-date-picker [(ngModel)]="selectedEndDateFilter"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></nz-date-picker>
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></nz-date-picker>
                 </div>
             </div>
             <p class="font-bold text-[1rem] border-none">Industry</p>
@@ -71,7 +71,8 @@
                     class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Search Clients..." required />
                 <button type="button" (click)="onFilter()"
-                    class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">{{isFiltering ? 'Clear' : 'Filter'}}</button>
+                    class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">{{isFiltering
+                    ? 'Clear' : 'Filter'}}</button>
 
             </div>
 
@@ -81,8 +82,10 @@
     </div>
 
     <div *ngIf="clients$ | async as client" class="relative overflow-x-auto rounded-md">
-        <div class="w-full text-white font-bold flex items-center justify-center" *ngIf="client.length < 1" >No Database Found</div>
-        <table *ngIf="client.length > 0" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <div class="w-full text-white font-bold flex items-center justify-center" *ngIf="client.length < 1">No Database
+            Found</div>
+        <table *ngIf="client.length > 0"
+            class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-6 py-3">
@@ -109,8 +112,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of client"
-                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <tr *ngFor="let item of client" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         {{item.name}}
                     </th>
@@ -180,13 +182,42 @@
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="Doe" required />
                             </div>
-                            <div>
+                            <div class="h-10 w-full">
                                 <label for="company"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company
                                     Name</label>
-                                <input type="text" id="company" name="company-name" [(ngModel)]="companyName"
+                                <button id="client-company" data-dropdown-toggle="dropdown-client-company"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Redwoods" required />
+                                    type="button">{{companyName ? companyName : 'Select client company'}}</button>
+                            </div>
+                            <div id="dropdown-client-company"
+                                class="z-10 hidden border border-white bg-white p-3 rounded-lg shadow w-60 dark:bg-gray-700">
+                                <input (change)="searchForCompany()" type="text" id="company-search-id" name="company-search" [(ngModel)]="companyNameSearch"
+                                class="bg-gray-50 border mb-3 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Search" required />
+                                <div class="relative w-full">
+                                    <input (change)="onAddNewClientCompany()" type="text" id="company-add" name="add-company-name" [(ngModel)]="addNewCompanyName"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Add new +" required />
+                                    <span class="absolute right-3 top-3 text-white">Enter</span>
+                                </div>
+
+                                <div *ngIf="clientCompany$ | async as clientCompany">
+                                    <p *ngIf="clientCompany.length < 1" class="p-3 text-white">No client company registered</p>
+                                    <ul *ngIf="clientCompany.length > 0"
+                                        class="h-48 px-3 pb-3 pt-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
+                                        aria-labelledby="dropdownSearchButton">
+                                        <li class="border-b border-b-white" *ngFor="let item of clientCompany$ | async">
+                                            <div (click)="clientCompanySelect(item.name)"
+                                                class="flex items-center ps-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+
+                                                <label for="checkbox-item-11"
+                                                    class="w-full py-2 ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{item.name}}</label>
+                                            </div>
+                                        </li>
+
+                                    </ul>
+                                </div>
                             </div>
                             <div>
                                 <label for="phone"

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core'
 import { AngularFirestore } from '@angular/fire/compat/firestore'
-import { Timestamp } from '@angular/fire/firestore'
+import { Timestamp, where } from '@angular/fire/firestore'
 import { Observable } from 'rxjs'
 
 import { Dropdown, DropdownInterface, initDropdowns, initFlowbite } from 'flowbite'
@@ -21,6 +21,7 @@ export interface Company {
 export class ClientComponent implements OnInit {
   company$: Observable<Company[]> | undefined
   type$: Observable<any[]> | undefined
+  clientCompany$: Observable<any[]> | undefined
 
   name: string = ''
   title: string = ''
@@ -37,6 +38,9 @@ export class ClientComponent implements OnInit {
   state: string = ''
   postalCode: string = ''
   searchQuery: string = ''
+
+  companyNameSearch: string = ''
+  addNewCompanyName: string = ''
 
   isFilterShown: boolean = false
   isFiltering: boolean = false
@@ -64,10 +68,34 @@ export class ClientComponent implements OnInit {
     // this.dropdown = new Dropdown(document.getElementById('dropdown-filter'))
 
     this.company$ = this.db.collection<Company>('companies').valueChanges()
+    this.clientCompany$ = this.db.collection('client_companies').valueChanges()
     this.clients$ = this.db
       .collection('clients', (q) => q.orderBy('created_at', 'desc'))
       .valueChanges()
     this.type$ = this.db.collection('types').valueChanges()
+    
+  }
+
+  onAddNewClientCompany() {
+    this.companyName = this.addNewCompanyName
+  }
+
+  clientCompanySelect(company: string) {
+    this.companyName = company
+  }
+
+  searchForCompany() {
+    this.clientCompany$ = this.db.collection('client_companies', ref => ref.where('name', '>=', this.companyNameSearch).where('name', '<=', this.companyNameSearch + '\uf8ff')).valueChanges()
+  }
+
+  saveClientCompany() {
+    let ref = this.db.collection('client_companies', ref => ref.where('name', '!=', this.companyName)).doc().ref
+
+    if(this.companyName && this.companyName != ""){
+      this.db.collection('client_companies').doc(ref.id).set({
+        name: this.companyName
+      })
+    }
   }
 
   onSearch() {
@@ -165,6 +193,9 @@ export class ClientComponent implements OnInit {
 
     if(this.validateInput()) {
       if (!(await this.checkIfValueExists())) {
+
+        this.saveClientCompany()
+
         this.db
           .collection('clients').doc(dbRef.id)
           .set({
@@ -187,6 +218,9 @@ export class ClientComponent implements OnInit {
           })
           .then((ref) => {
             console.log(ref)
+
+            this.addNewCompanyName = ''
+            this.companyName = ''
           })
           .catch((err) => {
             console.log(err)
