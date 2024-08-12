@@ -1,4 +1,4 @@
-<main class="flex flex-col gap-y-5">
+<main class="flex flex-col gap-y-5 p-4 h-screen relative">
     <div class="flex relative text-gray-300 w-full gap-x-2 items-center">
         <div *ngIf="isFilterShown" id="dropdown-filter"
             class="z-10 absolute right-0 top-16 w-[35rem] space-y-3 p-5 bg-white rounded-lg shadow dark:bg-gray-700">
@@ -135,7 +135,7 @@
                     </td>
                     <td class="px-6 py-4 space-x-2">
                         <button (click)="onEditClick(item)" #editdata data-modal-target="default-modal" data-modal-toggle="default-modal" class="btn btn-neutral">View</button>
-                        <button (click)="deleteData(item.id)" class="btn btn-error text-white">Delete</button>
+                        <button (click)="deleteData(item.id, item.name)" class="btn btn-error text-white">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -319,3 +319,7 @@
         </div>
     </div>
 </main>
+
+<div class="relative">
+    <app-logs [logs]="clientLogs"></app-logs>
+</div>

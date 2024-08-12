@@ -13,6 +13,7 @@ import {
 import { Subscription } from 'rxjs'
 import { ToastrService } from 'ngx-toastr'
 import { initFlowbite, Dismiss, DismissInterface, DismissOptions, InstanceOptions } from 'flowbite'
+import { AuthService } from '../services/auth.service'
 
 @Component({
   selector: 'app-auth',
@@ -24,15 +25,7 @@ export class AuthComponent implements OnInit {
   password: string = ''
   isError: boolean = false
 
-  private auth: Auth = inject(Auth)
-
-  user$ = user(this.auth)
-  userSubscription: Subscription
-
-  constructor(private router: Router, private toastr: ToastrService) {
-    this.userSubscription = this.user$.subscribe((aUser: User | null) => {
-      console.log(aUser)
-    })
+  constructor(private router: Router, private toastr: ToastrService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -46,21 +39,14 @@ export class AuthComponent implements OnInit {
   onLogin() {
     console.log(this.email)
     console.log(this.password)
-    signInWithEmailAndPassword(this.auth, this.email, this.password)
-      .then((userCred) => {
-        console.log(userCred.user)
 
-        this.router.navigate(['dashboard'])
-      })
-      .catch((e: AuthError) => {
-        console.log(e)
+    this.authService.login(this.router, this.email, this.password).then((authNotError) => {
+      if(!authNotError) {
         this.isError = true
-
-        setTimeout(() => {
-          this.isError = false
-        }, 3000)
-      })
-
+      } else {
+        this.isError = false;
+      }
+    })
     
   }
 }

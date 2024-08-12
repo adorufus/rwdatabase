@@ -11,6 +11,7 @@ import {
   Modal,
 } from 'flowbite'
 import { FilterSysService } from '../../services/filter-sys.service'
+import { Action, LoggerService } from '../../services/logger.service'
 
 declare var Datepicker: any
 declare var DateRangePicker: any
@@ -47,6 +48,8 @@ export class ClientComponent implements OnInit {
   postalCode: string = ''
   clientUid: string | undefined
 
+  clientLogs: Observable<any> | undefined
+
   isUpdateData: boolean = false
 
   searchQuery: string = ''
@@ -63,6 +66,7 @@ export class ClientComponent implements OnInit {
   constructor(
     private db: AngularFirestore,
     private filterSys: FilterSysService,
+    private loggerService: LoggerService
   ) {}
 
   // filter fields var
@@ -95,6 +99,8 @@ export class ClientComponent implements OnInit {
       .collection('clients', (q) => q.orderBy('created_at', 'desc'))
       .valueChanges()
     this.type$ = this.db.collection('types').valueChanges()
+
+    this.clientLogs = this.loggerService.getLog('client')
   }
 
   onCreateNewClick() {
@@ -245,8 +251,11 @@ export class ClientComponent implements OnInit {
     this.selectedTypeFilter = (e.target as HTMLSelectElement).value
   }
 
-  deleteData(id: string) {
-    this.db.collection('clients').doc(id).delete()
+  deleteData(id: string, client_name: string = '') {
+    this.db.collection('clients').doc(id).delete().then(() => {
+      this.loggerService.createLog('client', Action.DELETE, client_name)
+    })
+    
   }
 
   validateInput() {
@@ -270,7 +279,7 @@ export class ClientComponent implements OnInit {
         this.saveClientCompany()
 
         let data: any = {
-          id: dbRef.id,
+          id: this.isUpdateData ? this.clientUid : dbRef.id,
           name: this.name,
           title: this.title,
           company_name: this.companyName,
@@ -302,11 +311,14 @@ export class ClientComponent implements OnInit {
             if (this.isUpdateData) {
               console.log('update data completed')
               this.isUpdateData = false
+              this.loggerService.createLog('client', Action.EDIT, this.name)
             } else {
               console.log(ref)
 
               this.addNewCompanyName = ''
               this.companyName = ''
+
+              this.loggerService.createLog('client', Action.CREATE, this.name)
             }
 
             this.clientModal?.hide()

@@ -16,6 +16,7 @@ import { provideNativeDateAdapter } from '@angular/material/core'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap'
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { LogsComponent } from './logs/logs.component';
 
 
 const routes: Routes = [
@@ -53,6 +54,7 @@ const routes: Routes = [
     UsersComponent,
     CompanyComponent,
     DatabaseTypeComponent,
+    LogsComponent,
   ],
   imports: [
     CommonModule,
